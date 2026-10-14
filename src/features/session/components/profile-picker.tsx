@@ -32,7 +32,7 @@ export function ProfilePicker({ initialProfile }: { initialProfile?: ProfileId }
       <div className="space-y-4" aria-busy="true">
         <div className="grid gap-3 sm:grid-cols-3">
           {[0, 1, 2].map((i) => (
-            <Skeleton key={i} className="h-29.5 rounded-xl" />
+            <Skeleton key={i} className="h-40 rounded-2xl" />
           ))}
         </div>
         <p className="text-sm text-muted-foreground" role="status">
@@ -62,6 +62,15 @@ export function ProfilePicker({ initialProfile }: { initialProfile?: ProfileId }
     if (selected) startSession.mutate({ profile: selected.profile, prompt });
   };
 
+  if (profiles.data.length === 0) {
+    return (
+      <div className="space-y-3 rounded-xl border border-dashed p-6" role="status">
+        <p className="text-sm text-muted-foreground">No demo customers are available yet. Please try again.</p>
+        <Button variant="outline" onClick={() => profiles.refetch()}><RotateCwIcon /> Refresh customers</Button>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <div role="group" aria-label="Demo customers" className="grid gap-3 sm:grid-cols-3">
@@ -77,10 +86,10 @@ export function ProfilePicker({ initialProfile }: { initialProfile?: ProfileId }
       </div>
 
       {selected && (
-        <div className="overflow-hidden rounded-xl border bg-card shadow-xs">
+        <div className="overflow-hidden rounded-2xl border bg-card">
           {scenario && (
             <div className="p-2">
-              <p className="px-3 pt-2 pb-1.5 text-xs font-medium text-muted-foreground">
+              <p className="px-3 pt-3 pb-2 text-sm font-semibold">
                 Try asking as {selected.name}
               </p>
               <ul>
@@ -90,16 +99,16 @@ export function ProfilePicker({ initialProfile }: { initialProfile?: ProfileId }
                       type="button"
                       disabled={startSession.isPending}
                       onClick={() => start(example.prompt)}
-                      className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-60"
+                      className="group flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left transition-colors outline-none hover:bg-brand-soft/60 focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-60"
                     >
                       <span className="min-w-0 flex-1">
-                        <span className="block text-sm">{example.prompt}</span>
-                        <span className="block text-xs text-muted-foreground">{example.hint}</span>
+                        <span className="block text-sm leading-6 font-medium">{example.prompt}</span>
+                        <span className="mt-0.5 block text-xs leading-5 text-muted-foreground">{example.hint}</span>
                       </span>
                       {pendingPrompt === example.prompt ? (
                         <Loader2Icon className="size-4 animate-spin text-muted-foreground" />
                       ) : (
-                        <ArrowUpRightIcon className="size-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" />
+                        <ArrowUpRightIcon className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-brand" aria-hidden />
                       )}
                     </button>
                   </li>
@@ -118,7 +127,7 @@ export function ProfilePicker({ initialProfile }: { initialProfile?: ProfileId }
             </p>
             <Button
               size="lg"
-              className="h-9 px-4"
+              className="h-11 rounded-xl px-5"
               disabled={startSession.isPending}
               onClick={() => start()}
             >
